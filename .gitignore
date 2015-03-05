@@ -1,3 +1,4 @@
 *.obj
+*.sdf
 [Dd]ebug/
 x64/
