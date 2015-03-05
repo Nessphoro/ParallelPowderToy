@@ -1,0 +1,30 @@
+{
+	"InstallCheck" : true,
+	"WindowX" : "1cb",
+	"WindowY" : "148",
+	"Renderer" : {
+		"ColourMode" : "0",
+		"DisplayModes" : [],
+		"RenderModes" : [
+			"3f380",
+			"ff00f270",
+			"400f381"
+		],
+		"GravityField" : false,
+		"Decorations" : true,
+		"DebugMode" : false
+	},
+	"Simulation" : {
+		"EdgeMode" : "0",
+		"NewtonianGravity" : "0",
+		"AmbientHeat" : "0",
+		"PrettyPowder" : "0"
+	},
+	"Decoration" : {
+		"Red" : "c8",
+		"Green" : "64",
+		"Blue" : "32",
+		"Alpha" : "ff"
+	},
+	"User" : null
+}

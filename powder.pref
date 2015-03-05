@@ -1,0 +1,48 @@
+{
+	"InstallCheck" : true,
+	"Scale" : "2",
+	"WindowX" : "10d",
+	"WindowY" : "74",
+	"Renderer" : {
+		"ColourMode" : "0",
+		"DisplayModes" : [
+			"10",
+			"8"
+		],
+		"RenderModes" : [
+			"3f380",
+			"4f380",
+			"f388",
+			"f384",
+			"ff00f270",
+			"400f381"
+		],
+		"GravityField" : false,
+		"Decorations" : true,
+		"DebugMode" : false
+	},
+	"Simulation" : {
+		"EdgeMode" : "0",
+		"NewtonianGravity" : "1",
+		"AmbientHeat" : "1",
+		"PrettyPowder" : "0"
+	},
+	"Decoration" : {
+		"Red" : "c8",
+		"Green" : "64",
+		"Blue" : "32",
+		"Alpha" : "ff"
+	},
+	"User" : null,
+	"Prop" : {
+		"Type" : "9",
+		"Value" : "0"
+	},
+	"Console" : {
+		"History" : [
+			"lua",
+			"hel",
+			"help"
+		]
+	}
+}
