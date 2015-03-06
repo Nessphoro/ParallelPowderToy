@@ -314,7 +314,6 @@
     <ClCompile Include="src\simulation\elements\BRCK.cpp" />
     <ClCompile Include="src\simulation\elements\BREC.cpp" />
     <ClCompile Include="src\simulation\elements\BRMT.cpp" />
-    <ClCompile Include="src\simulation\elements\BRON.cpp" />
     <ClCompile Include="src\simulation\elements\BTRY.cpp" />
     <ClCompile Include="src\simulation\elements\BVBR.cpp" />
     <ClCompile Include="src\simulation\elements\C5.cpp" />

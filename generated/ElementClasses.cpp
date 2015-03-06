@@ -182,6 +182,5 @@ std::vector<Element> GetElements()
 	elements.push_back(Element_VRSG());
 	elements.push_back(Element_GRVT());
 	elements.push_back(Element_DRAY());
-	elements.push_back(Element_BRON());
 	return elements;
 }

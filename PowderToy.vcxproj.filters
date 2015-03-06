@@ -981,9 +981,6 @@
     <ClCompile Include="src\tasks\TaskWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\simulation\elements\BRON.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="data\font.h">

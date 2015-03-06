@@ -187,7 +187,6 @@
 #define PT_VRSG 176
 #define PT_GRVT 177
 #define PT_DRAY 178
-#define PT_BRON 179
 
 class Element_NONE: public Element
 {
@@ -1708,14 +1707,6 @@ public:
 	static int update(UPDATE_FUNC_ARGS);
 };
 
-class Element_BRON: public Element
-{
-public:
-	Element_BRON();
-	static int update(UPDATE_FUNC_ARGS);
-	virtual ~Element_BRON();
-	
-};
 
 std::vector<Element> GetElements();
 
