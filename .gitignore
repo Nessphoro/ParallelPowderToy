@@ -1,6 +1,6 @@
 *.obj
 *.sdf
 *.pref
-#/[Dd]ebug/
+[Dd]ebug/
 x64/
 *.sdf

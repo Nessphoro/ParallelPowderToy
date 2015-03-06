@@ -3254,7 +3254,7 @@ void Simulation::delete_part(int x, int y)//calls kill_part with the particle lo
 		return;
 	kill_part(i>>8);
 }
-#define MAX_CELL_PARTICLES 2048
+
 
 void Simulation::update_particles_i(int start, int inc)
 {
