@@ -29,6 +29,7 @@
 #include "lua/LuaScriptInterface.h"
 #include "lua/LuaScriptHelper.h"
 #endif
+#include <omp.h>
 
 int Simulation::Load(GameSave * save)
 {
@@ -3257,9 +3258,9 @@ void Simulation::delete_part(int x, int y)//calls kill_part with the particle lo
 
 void Simulation::update_particles_i(int start, int inc)
 {
-	static int cellPool[YRES / CELL][XRES / CELL][MAX_CELL_PARTICLES];
-	static int poolCounts[YRES / CELL][XRES / CELL];
-	static int electronicsPool[NPART];
+	static int cellPool[2][2][NPART];
+	static int poolCounts[2][2];
+	static int boundaryPool[NPART];
 	
 
 	int i, j, x, y, t, nx, ny, r, surround_space, s, lt, rt, nt, nnx, nny, q, golnum, z, neighbors;
@@ -3275,7 +3276,7 @@ void Simulation::update_particles_i(int start, int inc)
 	unsigned int elem_properties;
 	float pGravX, pGravY, pGravD;
 	int excessive_stacking_found = 0;
-	int electronicsCount = 0;
+	int boundaryCount = 0;
 
 	currentTick++;
 
@@ -3559,26 +3560,41 @@ void Simulation::update_particles_i(int start, int inc)
 
 	memset(poolCounts, 0, sizeof(poolCounts));
 	memset(cellPool, 0, sizeof(cellPool));
-	memset(electronicsPool, 0, sizeof(electronicsPool));
-
+	memset(boundaryPool, 0, sizeof(boundaryPool));
+	boundaryCount = 0;
 	for (i=0; i<=parts_lastActiveIndex; i++)
 		if (parts[i].type)
 		{
-			if (elements[parts[i].type].MenuSection == SC_ELEC)
+			//if (elements[parts[i].type].MenuSection == SC_ELEC)
+			//{
+				//boundaryPool[boundaryCount++] = i;
+			//}
+			//else
+			//{
+
+			int cY = (int)parts[i].y;
+			int cX = (int) parts[i].x;
+			if (fabsf(cY - YRES / 2) > 4*CELL && fabsf(cX - XRES / 2) > 4*CELL)
 			{
-				electronicsPool[electronicsCount++] = i;
+				if (cY < YRES / 2)
+					cY = 0;
+				else
+					cY = 1;
+
+				if (cX < XRES / 2)
+				{
+					cX = 0;
+				}
+				else
+					cX = 1;
+
+				cellPool[cY][cX][poolCounts[cY][cX]++] = i;
 			}
 			else
 			{
-
-				int cY = (int)parts[i].y / CELL;
-				int cX = (int)parts[i].x / CELL;
-				cellPool[cY][cX][poolCounts[cY][cX]++] = i;
-				if (poolCounts[cY][cX] >= MAX_CELL_PARTICLES)
-				{
-					throw std::exception();
-				}
+				boundaryPool[boundaryCount++] = i;
 			}
+			//}
 			t = parts[i].type;
 			if (t<0 || t>=PT_NUM || !elements[t].Enabled)
 			{
@@ -3615,9 +3631,10 @@ void Simulation::update_particles_i(int start, int inc)
 		}
 
 
-	for (int e = 0; e < electronicsCount;e++)
+	
+	for (int e = 0; e < boundaryCount;e++)
 	{
-		int i = electronicsPool[e];
+		int i = boundaryPool[e];
 		if (parts[i].type)
 		{
 			t = parts[i].type;
@@ -4718,14 +4735,15 @@ void Simulation::update_particles_i(int start, int inc)
 		}
 
 	}
-
-#pragma omp parallel
+	
+#pragma omp parallel num_threads(4)
 	{
-#pragma omp for private(i, j, x, y, t, nx, ny, r, surround_space, s, lt, rt, nt, nnx, nny, q, golnum, z, neighbors,mv, dx, dy, nrx, nry, dp, ctemph, ctempl, gravtot,fin_x, fin_y, clear_x, clear_y, stagnant,fin_xf, fin_yf, clear_xf, clear_yf,nn, ct1, ct2, swappage,pt,c_heat ,h_count,surround,surround_hconduct,elem_properties,pGravX, pGravY, pGravD,excessive_stacking_found) schedule(guided)
-		for (int yC = 0; yC < YRES/CELL; yC++)
+#pragma omp for private(i, j, x, y, t, nx, ny, r, surround_space, s, lt, rt, nt, nnx, nny, q, golnum, z, neighbors,mv, dx, dy, nrx, nry, dp, ctemph, ctempl, gravtot,fin_x, fin_y, clear_x, clear_y, stagnant,fin_xf, fin_yf, clear_xf, clear_yf,nn, ct1, ct2, swappage,pt,c_heat ,h_count,surround,surround_hconduct,elem_properties,pGravX, pGravY, pGravD,excessive_stacking_found) schedule(static,1) ordered
+		for (int cell = 0;cell<4; cell++)
 		{
-			for (int xC = yC&1; xC < XRES/CELL; xC+=2) //Interleave
-			{
+			
+			int yC = cell / 2;
+			int xC = cell % 2;
 				for (int partIndex = 0; partIndex < poolCounts[yC][xC]; partIndex++)
 				{
 					i = cellPool[yC][xC][partIndex];
@@ -5829,9 +5847,10 @@ void Simulation::update_particles_i(int start, int inc)
 					}
 
 				}
-			}
+			
 		}
 #pragma omp flush
+		/*
 #pragma omp for private(i, j, x, y, t, nx, ny, r, surround_space, s, lt, rt, nt, nnx, nny, q, golnum, z, neighbors,mv, dx, dy, nrx, nry, dp, ctemph, ctempl, gravtot,fin_x, fin_y, clear_x, clear_y, stagnant,fin_xf, fin_yf, clear_xf, clear_yf,nn, ct1, ct2, swappage,pt,c_heat ,h_count,surround,surround_hconduct,elem_properties,pGravX, pGravY, pGravD,excessive_stacking_found) schedule(guided)
 		for (int yC = 0; yC < YRES / CELL; yC++)
 		{
@@ -6942,6 +6961,7 @@ void Simulation::update_particles_i(int start, int inc)
 				}
 			}
 		}
+		*/
 	}
 }
 
